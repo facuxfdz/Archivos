@@ -32,49 +32,51 @@ void Abrir(ifstream&, ofstream&);
 bool Leer(ifstream&, linea&);
 void procOrigPr(ifstream&,reg[]);
 void Escribir(ofstream&,reg[]);
+void Cerrar(ifstream&, ofstream&);
 
 
 int main(){
-    ifstream forigenPrueba;
-    ofstream fprueba;
+    ifstream arPartesDiarios;
+    ofstream arPartesDiariosV2;
     reg registro[71004];
 
-    Abrir(forigenPrueba,fprueba);
-    procOrigPr(forigenPrueba,registro);
-    Escribir(fprueba,registro);
+    Abrir(arPartesDiarios,arPartesDiariosV2);
+    procOrigPr(arPartesDiarios,registro);
+    Escribir(arPartesDiariosV2,registro);
+    Cerrar(arPartesDiarios,arPartesDiariosV2);
     
     return 0;
 }
 
-void Abrir(ifstream &forigenPrueba, ofstream &fprueba){
-    forigenPrueba.open("PartesDiarios.txt", ios::in);
-    fprueba.open("PartesDiariosV2.txt", ios::out);
+void Abrir(ifstream &fpartesDiarios, ofstream &fpartesDiariosOut){
+    fpartesDiarios.open("PartesDiarios.txt", ios::in);
+    fpartesDiariosOut.open("PartesDiariosV2.txt", ios::out);
 }
 
 
-bool Leer(ifstream &forigenPrueba, linea &line){
-    getline(forigenPrueba,line.pais,',');
-    forigenPrueba >> line.mes;
-    forigenPrueba.ignore();
-    forigenPrueba >> line.dia;
-    forigenPrueba.ignore();
-    forigenPrueba >> line.cant[HISOPADOS];
-    forigenPrueba.ignore();
-    forigenPrueba >> line.cant[INFECTADOS];
-    forigenPrueba.ignore();
-    forigenPrueba >> line.cant[RECUPERADOS];
-    forigenPrueba.ignore();
-    forigenPrueba >> line.cant[FALLECIDOS];
-    forigenPrueba.ignore();
+bool Leer(ifstream &fpartesDiarios, linea &line){
+    getline(fpartesDiarios,line.pais,',');
+    fpartesDiarios >> line.mes;
+    fpartesDiarios.ignore();
+    fpartesDiarios >> line.dia;
+    fpartesDiarios.ignore();
+    fpartesDiarios >> line.cant[HISOPADOS];
+    fpartesDiarios.ignore();
+    fpartesDiarios >> line.cant[INFECTADOS];
+    fpartesDiarios.ignore();
+    fpartesDiarios >> line.cant[RECUPERADOS];
+    fpartesDiarios.ignore();
+    fpartesDiarios >> line.cant[FALLECIDOS];
+    fpartesDiarios.ignore();
 
-    return forigenPrueba.good();
+    return fpartesDiarios.good();
 }
 
-void procOrigPr(ifstream &forigenPrueba, reg registro[]){
+void procOrigPr(ifstream &fpartesDiarios, reg registro[]){
     linea renglon;
     int i=0;
 
-    while(Leer(forigenPrueba,renglon)&&i<71004){
+    while(Leer(fpartesDiarios,renglon)&&i<71004){
         registro[i].nombrePais = renglon.pais;
         registro[i].mes = renglon.mes;
         registro[i].dia = renglon.dia;
@@ -86,13 +88,13 @@ void procOrigPr(ifstream &forigenPrueba, reg registro[]){
     }
 }
 
-void Escribir(ofstream &fprueba, reg registro[]){
+void Escribir(ofstream &fpartesDiariosOut, reg registro[]){
     for(int i=0;i<71004;i++){
         if(registro[i].nombrePais.length() >= 20 ){
             continue;
         }
         else{
-            fprueba << left << setw(21) <<registro[i].nombrePais
+            fpartesDiariosOut << left << setw(21) <<registro[i].nombrePais
                 << right << setw(21) <<registro[i].mes
                 << right << setw(21) <<registro[i].dia
                 << right << setw(21) <<registro[i].cantidades[HISOPADOS]
@@ -103,4 +105,9 @@ void Escribir(ofstream &fprueba, reg registro[]){
         }
     }
     cout<<"Todo leido y escrito correctamente"<<endl;
+}
+
+void Cerrar(ifstream &fpartesDiarios, ofstream &fpartesDiariosOut){
+    fpartesDiarios.close();
+    fpartesDiariosOut.close();
 }
